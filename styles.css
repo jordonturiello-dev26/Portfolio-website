@@ -71,26 +71,24 @@ nav .right a:hover {
 }
 
 @media (max-width: 768px) {
-    .right {
-      display: none;               
-      flex-direction: column;
-      position: absolute;
-      top: 60px;                   
-      right: 20px;
-      background: white;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-  
-    .right.active {
-      display: flex;               
-    }
-  
     .hamburger {
-      display: block;              
+        display: none;
     }
-  }
+
+    .right {
+        display: none;
+    }
+
+    nav {
+        justify-content: center
+    }
+
+    nav .left a {
+        text-align: center;
+        font-size: 1.5rem;
+    }
+}
+
 section {
     padding: 8rem 2rem;
     min-height: 80vh;
