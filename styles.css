@@ -29,8 +29,8 @@ nav {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding:  3.125rem;
-    height: 5rem;
+    padding: 0.75rem 1.5rem; 
+  height: 3.5rem; 
     align-items: center;
     position: fixed;
     top: 0;
@@ -42,7 +42,7 @@ nav {
 
 nav .left a {
     color: white;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 600;
 }
 
@@ -52,7 +52,7 @@ nav .left a:hover{
 
 nav .right a {
     color: white;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
     margin: 0 .625rem;
 }
@@ -326,4 +326,18 @@ footer {
     display: flex;
     justify-content: center;
     padding: 1rem;
+}
+
+#typewriter {
+    border-right: 3px solid black;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    0% { border-color: transparent; }
+    50% { border-color: black; }
+    100% { border-color: transparent; }
 }
