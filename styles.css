@@ -87,7 +87,20 @@ nav .right a:hover {
         text-align: center;
         font-size: 1.5rem;
     }
+
+    section h2 {
+        font-size: 2rem;
+    }
+
+    #typewriter {
+        white-space: normal;
+        border-right: 2px solid black;
+    }
+
+
 }
+
+
 
 section {
     padding: 8rem 2rem;
