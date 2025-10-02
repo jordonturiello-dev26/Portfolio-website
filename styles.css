@@ -2,7 +2,9 @@ body {
     background-color: #eeeff1;
     color: black;  
     font-family: 'Inter', sans-serif;
+    padding-top: 3.5rem;   
 }
+
 /* Links */
 a:hover {
     color: white;
@@ -76,38 +78,6 @@ nav .right a:hover {
     border: none;
     cursor: pointer;
 }
-/* Mobile */
-@media (max-width: 768px) {
-    .hamburger {
-        display: none;
-    }
-
-    .right {
-        display: none;
-    }
-
-    nav {
-        justify-content: center;
-        padding: 0.5rem 1rem;  
-        height: 2.75rem; 
-    }
-
-    nav .left a {
-        text-align: center;
-        font-size: 1.5rem;
-    }
-
-    section h2 {
-        font-size: 2rem;
-    }
-
-    #typewriter {
-        white-space: normal;
-        word-wrap: break-word;
-        border-right: 2px solid black;
-        display: inline-block;
-    }
-}
 
 /* Sections */
 section {
@@ -154,12 +124,11 @@ section h2::after {
     min-height: 50vh;
     flex-direction: column;
     justify-content: center;
-    padding: 8rem 2rem;
+    padding: 6rem 2rem;
     display: flex;
     align-items: center;
     text-align: center;
     gap: 0.5rem;
-    padding: 13rem 2rem;
 }
 
 #about-section h2 {
@@ -474,18 +443,28 @@ footer {
 
 /* Animations */
 #typewriter {
-    border-right: 3px solid black;
-    white-space: nowrap;
-    overflow: hidden;
     display: inline-block;
+    white-space: pre-wrap;   
+    overflow-wrap: break-word;
+    word-break: break-word;
+    border-right: none;     
+  }
+  
+  /* New cursor */
+  #typewriter::after {
+    content: '|';               
+    display: inline-block;
+    margin-left: 2px;
     animation: blink 0.7s infinite;
-}
-
-@keyframes blink {
-    0% { border-color: transparent; }
-    50% { border-color: black; }
-    100% { border-color: transparent; }
-}
+    color: black;
+  }
+  
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  
 
 .fade-in-section {
     opacity: 0;
@@ -498,3 +477,57 @@ footer {
     opacity: 1;
     transform: none;
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+    .hamburger {
+        display: none;
+    }
+
+    .right {
+        display: none;
+    }
+
+    nav {
+        justify-content: center;
+        padding: 0.5rem 1rem;  
+        height: 2.75rem; 
+    }
+
+    nav .left a {
+        text-align: center;
+        font-size: 1.5rem;
+    }
+
+    section h2 {
+        font-size: 2rem;
+    }
+
+    #typewriter {
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        display: inline-block;
+    }
+
+    #typewriter::after {
+        content: '';
+        display: inline-block;
+        width: 2px;                  
+        height: 1.1em;               
+        background-color: black;
+        margin-left: 3px;
+        animation: blink 0.7s infinite;
+        vertical-align: -0.15em;     
+      }
+
+    nav .container {
+        justify-content: center;
+    }
+
+    #about-section {
+        padding-top: 4rem;
+        margin-top: 0;
+    }
+}
+
