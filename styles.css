@@ -103,6 +103,7 @@ nav .right a:hover {
 
     #typewriter {
         white-space: normal;
+        word-wrap: break-word;
         border-right: 2px solid black;
         display: inline-block;
     }
