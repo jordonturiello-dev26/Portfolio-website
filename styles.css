@@ -236,7 +236,7 @@ section h2::after {
 .carousel {
     position: relative;
     width: 90%;
-    max-width: 900px;
+    max-width: 1000px;
     margin: auto;
     overflow: hidden;
     border-radius: 15px;
@@ -528,6 +528,10 @@ footer {
     #about-section {
         padding-top: 4rem;
         margin-top: 0;
+    }
+
+    .carousel {
+        display: none;
     }
 }
 
