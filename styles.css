@@ -366,13 +366,6 @@ section h2::after {
     font-size: 2.75rem;
     font-weight: 700;
 }
-
-#skills-section .skills-container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;  
-    gap: 2rem;       
-}
   
 #skills-section .skills-container {
     display: flex;
@@ -529,10 +522,6 @@ footer {
         padding-top: 4rem;
         margin-top: 0;
     }
-
-    .carousel {
-        display: none;
-    }
 }
 
 /* Project grid section */
@@ -608,5 +597,5 @@ footer {
       grid-template-columns: 1fr;
       gap: 1rem;
     }
-}
+} 
 
