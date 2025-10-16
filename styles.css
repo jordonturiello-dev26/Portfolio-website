@@ -81,13 +81,12 @@ nav .right a:hover {
 
 /* Sections */
 section {
-    padding: 8rem 2rem;
-    min-height: 80vh;
+    padding: 6rem 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 2rem;
+    gap: 1.5em;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -121,13 +120,7 @@ section h2::after {
 
 /* About Section */
 #about-section {
-    min-height: 50vh;
-    flex-direction: column;
     justify-content: center;
-    padding: 6rem 2rem;
-    display: flex;
-    align-items: center;
-    text-align: center;
     gap: 0.5rem;
 }
 
@@ -203,7 +196,6 @@ section h2::after {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    min-height: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -235,12 +227,7 @@ section h2::after {
 
 /* Skills */
 #skills-section {
-    min-height: 30vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 #skills-section h2 {
@@ -271,13 +258,8 @@ section h2::after {
 
 /* Contact Section */
 #leave-message-section {
-    min-height: 50vh;
-    display: flex;
-    flex-direction: column;
     justify-content: center;
-    align-items: center;
-    text-align: center;
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
 #leave-message-section h2 {
@@ -325,14 +307,17 @@ footer {
     border-right: none;     
   }
   
-  /* New cursor */
   #typewriter::after {
-    content: '|';               
+    content: '';
     display: inline-block;
-    margin-left: 2px;
+    width: 5px;                
+    height: 1.1em;             
+    background-color: #ff6f61; 
+    margin-left: 4px;
     animation: blink 0.7s infinite;
-    color: black;
+    vertical-align: -0.15em;
   }
+  
   
   @keyframes blink {
     0% { opacity: 1; }
@@ -388,13 +373,14 @@ footer {
     #typewriter::after {
         content: '';
         display: inline-block;
-        width: 2px;                  
+        width: 3px;                  
         height: 1.1em;               
-        background-color: black;
+        background-color: #ff6f61;
         margin-left: 3px;
         animation: blink 0.7s infinite;
         vertical-align: -0.15em;     
       }
+      
 
     nav .container {
         justify-content: center;
@@ -413,7 +399,6 @@ footer {
     gap: 1.5rem;
     width: 90%;
     max-width: 1000px;
-    margin: 3rem auto 6rem auto;
 }
 
 .project-card {
