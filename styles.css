@@ -120,10 +120,31 @@ section h2::after {
 
 /* Hero section */
 #hero-section {
-    height:100vh;
+    position: relative;
+    height: 100vh;
+    display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
+
+/* Canvas */
+#particleCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+/* Hero animation */
 #typewriter-hero {
     display: inline-block;
     white-space: pre-wrap;   
@@ -142,6 +163,27 @@ section h2::after {
     animation: blink 0.7s infinite;
     vertical-align: -0.15em;
   }
+
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+.hero-btn {
+    margin-top: 1.8rem;
+    padding: 0.9rem 2rem;
+    background-color: none;
+    border: 3px solid #ff6f61;
+    border-radius: 15px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.hero-btn:hover {
+    transform: scale(1.2);
+}
 /* About Section */
 #about-section {
     position: relative;
@@ -333,34 +375,7 @@ footer {
     justify-content: center;
     padding: 1rem;
 }
-
-/* Animations */
-#typewriter {
-    display: inline-block;
-    white-space: pre-wrap;   
-    overflow-wrap: break-word;
-    word-break: break-word;
-    border-right: none;     
-  }
-  
-  #typewriter::after {
-    content: '';
-    display: inline-block;
-    width: 5px;                
-    height: 1.1em;             
-    background-color: #ff6f61; 
-    margin-left: 4px;
-    animation: blink 0.7s infinite;
-    vertical-align: -0.15em;
-  }
-
-  
-  @keyframes blink {
-    0% { opacity: 1; }
-    50% { opacity: 0; }
-    100% { opacity: 1; }
-  }
-  
+ 
 
 .fade-in-section {
     opacity: 0;
@@ -399,14 +414,14 @@ footer {
         font-size: 2rem;
     }
 
-    #typewriter {
+    #typewriter-hero {
         white-space: normal;
         word-wrap: break-word;
         overflow-wrap: break-word;
         display: inline-block;
     }
 
-    #typewriter::after {
+    #typewriter-hero::after {
         content: '';
         display: inline-block;
         width: 3px;                  
