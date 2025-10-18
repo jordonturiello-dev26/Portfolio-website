@@ -48,7 +48,7 @@ class Particle {
     this.dx = dx;
     this.dy = dy;
     this.size = size;
-    this.color = Math.random() < 0.2 ? "#9a9a8f" : "rgba(200, 200, 200, 0.25)";
+    this.color = Math.random() < 0.9 ? "#ff6f61" : "rgba(200, 200, 200, 0.25)";
   }
 
   draw() {
