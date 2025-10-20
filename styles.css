@@ -3,7 +3,6 @@ body {
     background-color: #eeeff1;
     color: black;
     font-family: 'Inter', sans-serif;
-    padding-top: 3.5rem;
   }
   
   a {
@@ -315,7 +314,6 @@ body {
   /* ===== PROJECTS ===== */
   #projects-section {
     width: 100%;
-    max-width: 1200px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -486,4 +484,3 @@ body {
       width: 3px;
     }
   }
-  

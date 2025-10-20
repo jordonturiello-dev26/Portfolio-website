@@ -18,128 +18,171 @@ document.addEventListener("DOMContentLoaded", () => {
   typeWriter();
 });
 
-// Particle background animation
-const canvas = document.getElementById("particleCanvas");
-const ctx = canvas.getContext("2d");
 
-function resizeCanvas() {
-  canvas.width = canvas.offsetWidth;
-  canvas.height = canvas.offsetHeight;
-}
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
+// HERO PARTICLE SECTION
+document.addEventListener("DOMContentLoaded", () => {
+  const canvas = document.getElementById("particleCanvas");
+  const ctx = canvas.getContext("2d");
 
-let particles = [];
-const numParticles = 120;
-const maxDistance = 130;
-const mouseRadius = 200;
-const mouse = { x: null, y: null };
+  // Resize canvas
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
-window.addEventListener("mousemove", (e) => {
-  const rect = canvas.getBoundingClientRect();
-  mouse.x = e.clientX - rect.left;
-  mouse.y = e.clientY - rect.top;
+  const particles = [];
+  const numParticles = 220;
+  const maxDistance = 180;
+  const mouseRadius = 180;
+  const connectionSpeed = 0.04;
+
+  const mouse = { x: 0, y: 0, visible: false };
+
+  // Mouse tracking
+  window.addEventListener("mousemove", (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    mouse.visible = true;
+  });
+
+  window.addEventListener("mouseleave", () => (mouse.visible = false));
+
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  // Particle class
+  class Particle {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.vx = (Math.random() - 0.5) * 0.8;
+      this.vy = (Math.random() - 0.5) * 0.8;
+      this.radius = 1.5;
+    }
+
+    move() {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+      if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+    }
+
+    draw() {
+      if (!mouse.visible) {
+        ctx.fillStyle = "rgba(130,130,130,0.3)";
+      } else {
+        const dx = this.x - mouse.x;
+        const dy = this.y - mouse.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const withinMouse = distance < mouseRadius;
+        ctx.fillStyle = withinMouse
+          ? "rgba(90,90,90,0.9)"
+          : "rgba(130,130,130,0.3)";
+      }
+
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  // Create particles
+  for (let i = 0; i < numParticles; i++) {
+    particles.push(new Particle());
+  }
+
+  // Connect nearby particles
+  function connectParticles() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < maxDistance) {
+          const midX = (particles[i].x + particles[j].x) / 2;
+          const midY = (particles[i].y + particles[j].y) / 2;
+          let alpha = 0.2 - distance / (maxDistance * 1.3);
+
+          if (mouse.visible) {
+            const distToMouse = Math.sqrt((midX - mouse.x) ** 2 + (midY - mouse.y) ** 2);
+            if (distToMouse < mouseRadius) {
+              alpha = 0.9 - distance / maxDistance;
+            }
+          }
+
+          ctx.strokeStyle = `rgba(120,120,120,${Math.max(alpha, 0)})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  // Animation loop
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "rgba(238, 239, 241, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    for (let p of particles) {
+      p.move();
+      p.draw();
+    }
+
+    connectParticles();
+
+    if (Math.random() < connectionSpeed) {
+      for (let p of particles) {
+        p.vx += (Math.random() - 0.5) * 0.05;
+        p.vy += (Math.random() - 0.5) * 0.05;
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
 });
 
-class Particle {
-  constructor(x, y, dx, dy, size) {
-    this.x = x;
-    this.y = y;
-    this.dx = dx;
-    this.dy = dy;
-    this.size = size;
-    this.color = Math.random() < 0.9 ? "#ff6f61" : "rgba(200, 200, 200, 0.25)";
-  }
+// CUSTOM CURSOR SECTION
 
-  draw() {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fillStyle = this.color;
-    ctx.fill();
-  }
+// Get cursor element
+const cursor = document.getElementById("custom-cursor");
 
-  update() {
-    if (this.x < 0 || this.x > canvas.width) this.dx *= -1;
-    if (this.y < 0 || this.y > canvas.height) this.dy *= -1;
-    this.x += this.dx;
-    this.y += this.dy;
-    this.draw();
-  }
-}
+// Track mouse movement
+document.addEventListener("mousemove", (e) => {
+  cursor.style.top = `${e.clientY}px`;
+  cursor.style.left = `${e.clientX}px`;
+  cursor.style.opacity = "1";
+});
 
-function connectParticles() {
-  for (let i = 0; i < particles.length; i++) {
-    for (let j = i + 1; j < particles.length; j++) {
-      const dx = particles[i].x - particles[j].x;
-      const dy = particles[i].y - particles[j].y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
+// Hide cursor when mouse leaves window
+document.addEventListener("mouseleave", () => {
+  cursor.style.opacity = "0";
+});
 
-      if (distance < maxDistance) {
-        ctx.beginPath();
-        ctx.strokeStyle = `rgba(150, 150, 150, ${0.25 - distance / (maxDistance * 4)})`;
-        ctx.moveTo(particles[i].x, particles[i].y);
-        ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.stroke();
-      }
-    }
+// Add hover scaling & glow for interactive elements
+const interactiveElements = document.querySelectorAll(
+  "a, button, svg, img, .project-card"
+);
 
-    // Connect to mouse
-    const dxMouse = particles[i].x - mouse.x;
-    const dyMouse = particles[i].y - mouse.y;
-    const mouseDist = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
-    if (mouse.x && mouseDist < mouseRadius) {
-      ctx.beginPath();
-      ctx.strokeStyle = `rgba(150, 150, 150, ${0.3 - mouseDist / (mouseRadius * 3)})`;
-      ctx.lineWidth = 1;
-      ctx.moveTo(particles[i].x, particles[i].y);
-      ctx.lineTo(mouse.x, mouse.y);
-      ctx.stroke();
-    }
-  }
-}
-
-function initParticles() {
-  particles = [];
-  for (let i = 0; i < numParticles; i++) {
-    const x = Math.random() * canvas.width;
-    const y = Math.random() * canvas.height;
-    const dx = (Math.random() - 0.5) * 1.2;
-    const dy = (Math.random() - 0.5) * 1.2;
-    const size = Math.random() * 2 + 1;
-    particles.push(new Particle(x, y, dx, dy, size));
-  }
-}
-
-function animateParticles() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particles.forEach((p) => p.update());
-  connectParticles();
-  requestAnimationFrame(animateParticles);
-}
-
-initParticles();
-animateParticles();
-
-
-// Type writer
-document.addEventListener("DOMContentLoaded", () => {
-    const text = "Hey World, I'm Jordon!";
-    const speed = 120;
-    let i = 0;
-    const target = document.getElementById("typewriter");
-  
-    target.textContent = "";
-  
-    function typeWriter() {
-      if (i < text.length) {
-        target.textContent += text.charAt(i);
-        i++;
-        setTimeout(typeWriter, speed);
-      }
-    }
-  
-    typeWriter();
+interactiveElements.forEach((el) => {
+  el.addEventListener("mouseenter", () => {
+    cursor.style.transform = "translate(-50%, -50%) scale(2)";
+    cursor.style.backgroundColor = "rgba(255, 111, 97, 0.15)";
+    cursor.style.boxShadow = "0 0 12px rgba(255, 111, 97, 0.4)";
   });
+
+  el.addEventListener("mouseleave", () => {
+    cursor.style.transform = "translate(-50%, -50%) scale(1)";
+    cursor.style.backgroundColor = "transparent";
+    cursor.style.boxShadow = "none";
+  });
+});
 
 // Fade in 
 document.addEventListener("DOMContentLoaded", () => {
@@ -151,4 +194,3 @@ document.addEventListener("DOMContentLoaded", () => {
       }, index * 300);
     });
   });
-
