@@ -24,17 +24,31 @@ document.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("particleCanvas");
   const ctx = canvas.getContext("2d");
 
-  // Resize canvas
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+   // Resize canvas
+   canvas.width = window.innerWidth;
+   canvas.height = window.innerHeight;
+ 
+   const particles = [];
+ 
+  // Responsive particle density + connection distance
+let numParticles;
+let maxDistance;
 
-  const particles = [];
-  const numParticles = 220;
-  const maxDistance = 180;
-  const mouseRadius = 180;
-  const connectionSpeed = 0.04;
+if (window.innerWidth < 768) {
+  numParticles = 150;   // mobile
+  maxDistance = 160;
+} else if (window.innerWidth < 1440) {
+  numParticles = 300;   // laptop / medium screen
+  maxDistance = 240;
+} else {
+  numParticles = 500;   // large / ultra-wide
+  maxDistance = 320;
+}
 
-  const mouse = { x: 0, y: 0, visible: false };
+const mouseRadius = 220;     // increase slightly for more hover effects
+const connectionSpeed = 0.05; // faster random movement for liveliness
+
+const mouse = { x: 0, y: 0, visible: false }; 
 
   // Mouse tracking
   window.addEventListener("mousemove", (e) => {
@@ -76,8 +90,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const distance = Math.sqrt(dx * dx + dy * dy);
         const withinMouse = distance < mouseRadius;
         ctx.fillStyle = withinMouse
-          ? "rgba(90,90,90,0.9)"
-          : "rgba(130,130,130,0.3)";
+        ? "rgba(255, 111, 97, 0.9)"   
+        : "rgba(130,130,130,0.3)";    
       }
 
       ctx.beginPath();
@@ -86,10 +100,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Create particles
-  for (let i = 0; i < numParticles; i++) {
-    particles.push(new Particle());
+   // Init + recreate particles
+   function initParticles() {
+    particles.length = 0; // clear old ones
+    for (let i = 0; i < numParticles; i++) {
+      particles.push(new Particle());
+    }
   }
+
+  initParticles(); // run once at start
+
+  // Handle resize
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    initParticles();
+  });
 
   // Connect nearby particles
   function connectParticles() {
@@ -111,7 +137,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
           }
 
-          ctx.strokeStyle = `rgba(120,120,120,${Math.max(alpha, 0)})`;
+          ctx.strokeStyle = mouse.visible
+          ? `rgba(255, 111, 97, ${Math.max(alpha, 0)})`   // brand color when mouse active
+          : `rgba(120,120,120,${Math.max(alpha, 0)})`;   // default gray
+
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(particles[i].x, particles[i].y);
@@ -148,41 +177,43 @@ document.addEventListener("DOMContentLoaded", () => {
   animate();
 });
 
-// CUSTOM CURSOR SECTION
+if (window.innerWidth > 768) {
+  // CUSTOM CURSOR SECTION
 
-// Get cursor element
-const cursor = document.getElementById("custom-cursor");
+  // Get cursor element
+  const cursor = document.getElementById("custom-cursor");
 
-// Track mouse movement
-document.addEventListener("mousemove", (e) => {
-  cursor.style.top = `${e.clientY}px`;
-  cursor.style.left = `${e.clientX}px`;
-  cursor.style.opacity = "1";
-});
-
-// Hide cursor when mouse leaves window
-document.addEventListener("mouseleave", () => {
-  cursor.style.opacity = "0";
-});
-
-// Add hover scaling & glow for interactive elements
-const interactiveElements = document.querySelectorAll(
-  "a, button, svg, img, .project-card"
-);
-
-interactiveElements.forEach((el) => {
-  el.addEventListener("mouseenter", () => {
-    cursor.style.transform = "translate(-50%, -50%) scale(2)";
-    cursor.style.backgroundColor = "rgba(255, 111, 97, 0.15)";
-    cursor.style.boxShadow = "0 0 12px rgba(255, 111, 97, 0.4)";
+  // Track mouse movement
+  document.addEventListener("mousemove", (e) => {
+    cursor.style.top = `${e.clientY}px`;
+    cursor.style.left = `${e.clientX}px`;
+    cursor.style.opacity = "1";
   });
 
-  el.addEventListener("mouseleave", () => {
-    cursor.style.transform = "translate(-50%, -50%) scale(1)";
-    cursor.style.backgroundColor = "transparent";
-    cursor.style.boxShadow = "none";
+  // Hide cursor when mouse leaves window
+  document.addEventListener("mouseleave", () => {
+    cursor.style.opacity = "0";
   });
-});
+
+  // Add hover scaling & glow for interactive elements
+  const interactiveElements = document.querySelectorAll(
+    "a, button, svg, img, .project-card"
+  );
+
+  interactiveElements.forEach((el) => {
+    el.addEventListener("mouseenter", () => {
+      cursor.style.transform = "translate(-50%, -50%) scale(2)";
+      cursor.style.backgroundColor = "rgba(255, 111, 97, 0.15)";
+      cursor.style.boxShadow = "0 0 12px rgba(255, 111, 97, 0.4)";
+    });
+
+    el.addEventListener("mouseleave", () => {
+      cursor.style.transform = "translate(-50%, -50%) scale(1)";
+      cursor.style.backgroundColor = "transparent";
+      cursor.style.boxShadow = "none";
+    });
+  });
+}
 
 // Fade in 
 document.addEventListener("DOMContentLoaded", () => {
