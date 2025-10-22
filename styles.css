@@ -21,7 +21,8 @@ body {
   
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 5rem;
+    scroll-padding-top: 0rem;    
+    min-height:100%;
   }
   
   /* ===== SECTIONS ===== */
@@ -64,17 +65,20 @@ body {
   }
   
   /* ===== HERO ===== */
-  #hero-section {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    gap: 1.5rem;
-  }
-  
-  
+#hero-section {
+  height: 100dvh;          
+  height: 100svh;         
+  height: 100vh;          
+  position: relative;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  gap:1.5rem;
+  overflow:hidden;          
+}
+
   #hero-section::before {
     content: "";
     position: absolute;
@@ -104,9 +108,9 @@ body {
   }
   
   #typewriter-hero {
-    font-size: 3rem;       /* big impact */
-    font-weight: 300;      /* thin instead of bold */
-    color: #111111;           /* white text */
+    font-size: 3rem;       
+    font-weight: 300;      
+    color: #111111;          
   }
   
   #typewriter-hero::after {
@@ -142,7 +146,6 @@ body {
     transform: translateY(-3px);
     box-shadow: 0 4px 20px rgba(255, 77, 77, 0.4);
   }
-  
 
   /* ===== ABOUT ===== */
   #about-section {
@@ -457,9 +460,13 @@ body {
     letter-spacing: 1px;
   }
   
-  
   /* ===== MOBILE ===== */
   @media (max-width: 768px) {
+
+    .nav-inner .left {
+      display: none;
+    }
+
     #about-section {
       padding-top: 3.5rem;
     }
@@ -476,6 +483,10 @@ body {
   
     #about-section .about-content h2 {
       font-size: 2rem;
+    }
+
+    #about-section .bio p {
+      color: #000 !important;
     }
   
     #about-section .headshot {

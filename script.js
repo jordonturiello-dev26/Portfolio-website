@@ -1,3 +1,15 @@
+let resizeTimeout;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    recomputeDensity();   
+    initParticles();    
+  }, 200);
+});
+
+
 // Type writer hero
 document.addEventListener("DOMContentLoaded", () => {
   const text = "Hello, I'm Jordon.";
@@ -117,39 +129,39 @@ const mouse = { x: 0, y: 0, visible: false };
     initParticles();
   });
 
-  // Connect nearby particles
-  function connectParticles() {
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+  // Connect nearby particles (skip on mobile)
+function connectParticles() {
+  if (window.innerWidth < 768) return; // no lines on mobile
 
-        if (distance < maxDistance) {
-          const midX = (particles[i].x + particles[j].x) / 2;
-          const midY = (particles[i].y + particles[j].y) / 2;
-          let alpha = 0.2 - distance / (maxDistance * 1.3);
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
 
-          if (mouse.visible) {
-            const distToMouse = Math.sqrt((midX - mouse.x) ** 2 + (midY - mouse.y) ** 2);
-            if (distToMouse < mouseRadius) {
-              alpha = 0.9 - distance / maxDistance;
-            }
+      if (distance < maxDistance) {
+        const midX = (particles[i].x + particles[j].x) / 2;
+        const midY = (particles[i].y + particles[j].y) / 2;
+        let alpha = 0.2 - distance / (maxDistance * 1.3);
+
+        if (mouse.visible) {
+          const distToMouse = Math.sqrt((midX - mouse.x) ** 2 + (midY - mouse.y) ** 2);
+          if (distToMouse < mouseRadius) {
+            alpha = 0.9 - distance / maxDistance;
           }
-
-          ctx.strokeStyle = mouse.visible
-          ? `rgba(255, 111, 97, ${Math.max(alpha, 0)})`   // brand color when mouse active
-          : `rgba(120,120,120,${Math.max(alpha, 0)})`;   // default gray
-
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.stroke();
         }
+
+        ctx.strokeStyle = `rgba(255, 111, 97, ${Math.max(alpha, 0)})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.stroke();
       }
     }
   }
+}
+
 
   // Animation loop
   function animate() {
@@ -214,14 +226,19 @@ if (window.innerWidth > 768) {
     });
   });
 }
-
+  
 // Fade in 
 document.addEventListener("DOMContentLoaded", () => {
-    const faders = document.querySelectorAll(".fade-in-section");
-  
-    faders.forEach((fader, index) => {
-      setTimeout(() => {
-        fader.classList.add("is-visible");
-      }, index * 300);
+  const faders = document.querySelectorAll(".fade-in-section");
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        obs.unobserve(entry.target); 
+      }
     });
-  });
+  }, { threshold: 0.2 });
+
+  faders.forEach(fader => observer.observe(fader));
+});
