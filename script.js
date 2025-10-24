@@ -9,6 +9,122 @@ window.addEventListener("resize", () => {
   }, 200);
 });
 
+// HERO PARTICLE SECTION — lines only near cursor
+document.addEventListener("DOMContentLoaded", () => {
+  const canvas = document.getElementById("particleCanvas");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles = [];
+  const numParticles = window.innerWidth < 768 ? 150 : 300;
+  const mouse = { x: null, y: null, radius: 200 };
+
+  // Track mouse movement
+  window.addEventListener("mousemove", (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  window.addEventListener("mouseleave", () => {
+    mouse.x = null;
+    mouse.y = null;
+  });
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.vx = (Math.random() - 0.5) * 0.6;
+      this.vy = (Math.random() - 0.5) * 0.6;
+      this.radius = Math.random() * 1.5 + 0.5;
+    }
+
+    move() {
+      this.x += this.vx;
+      this.y += this.vy;
+
+      // wrap around edges for infinite float
+      if (this.x > canvas.width) this.x = 0;
+      if (this.x < 0) this.x = canvas.width;
+      if (this.y > canvas.height) this.y = 0;
+      if (this.y < 0) this.y = canvas.height;
+    }
+
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255, 111, 97, 0.6)";
+      ctx.fill();
+    }
+  }
+
+  function init() {
+    particles.length = 0;
+    for (let i = 0; i < numParticles; i++) {
+      particles.push(new Particle());
+    }
+  }
+
+  // Only connect particles within mouse radius
+  function connectNearMouse() {
+    if (!mouse.x || !mouse.y) return;
+
+    for (let a = 0; a < particles.length; a++) {
+      const dxA = particles[a].x - mouse.x;
+      const dyA = particles[a].y - mouse.y;
+      const distA = Math.sqrt(dxA * dxA + dyA * dyA);
+
+      if (distA < mouse.radius) {
+        for (let b = a + 1; b < particles.length; b++) {
+          const dx = particles[a].x - particles[b].x;
+          const dy = particles[a].y - particles[b].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          // only connect if both particles are near mouse
+          const dxB = particles[b].x - mouse.x;
+          const dyB = particles[b].y - mouse.y;
+          const distB = Math.sqrt(dxB * dxB + dyB * dyB);
+
+          if (distB < mouse.radius && distance < 150) {
+            const opacity = 1 - distance / 150;
+            ctx.strokeStyle = `rgba(255, 111, 97, ${opacity})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(particles[a].x, particles[a].y);
+            ctx.lineTo(particles[b].x, particles[b].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    for (let p of particles) {
+      p.move();
+      p.draw();
+    }
+
+    connectNearMouse();
+    requestAnimationFrame(animate);
+  }
+
+  init();
+  animate();
+
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    init();
+  });
+});
+
 
 // Type writer hero
 document.addEventListener("DOMContentLoaded", () => {
@@ -31,201 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// HERO PARTICLE SECTION
-document.addEventListener("DOMContentLoaded", () => {
-  const canvas = document.getElementById("particleCanvas");
-  const ctx = canvas.getContext("2d");
-
-   // Resize canvas
-   canvas.width = window.innerWidth;
-   canvas.height = window.innerHeight;
- 
-   const particles = [];
- 
-  // Responsive particle density + connection distance
-let numParticles;
-let maxDistance;
-
-if (window.innerWidth < 768) {
-  numParticles = 150;   // mobile
-  maxDistance = 160;
-} else if (window.innerWidth < 1440) {
-  numParticles = 300;   // laptop / medium screen
-  maxDistance = 240;
-} else {
-  numParticles = 500;   // large / ultra-wide
-  maxDistance = 320;
-}
-
-const mouseRadius = 220;     // increase slightly for more hover effects
-const connectionSpeed = 0.05; // faster random movement for liveliness
-
-const mouse = { x: 0, y: 0, visible: false }; 
-
-  // Mouse tracking
-  window.addEventListener("mousemove", (e) => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-    mouse.visible = true;
-  });
-
-  window.addEventListener("mouseleave", () => (mouse.visible = false));
-
-  window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  });
-
-  // Particle class
-  class Particle {
-    constructor() {
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
-      this.vx = (Math.random() - 0.5) * 0.8;
-      this.vy = (Math.random() - 0.5) * 0.8;
-      this.radius = 1.5;
-    }
-
-    move() {
-      this.x += this.vx;
-      this.y += this.vy;
-      if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-      if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-    }
-
-    draw() {
-      if (!mouse.visible) {
-        ctx.fillStyle = "rgba(130,130,130,0.3)";
-      } else {
-        const dx = this.x - mouse.x;
-        const dy = this.y - mouse.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const withinMouse = distance < mouseRadius;
-        ctx.fillStyle = withinMouse
-        ? "rgba(255, 111, 97, 0.9)"   
-        : "rgba(130,130,130,0.3)";    
-      }
-
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-
-   // Init + recreate particles
-   function initParticles() {
-    particles.length = 0; // clear old ones
-    for (let i = 0; i < numParticles; i++) {
-      particles.push(new Particle());
-    }
-  }
-
-  initParticles(); // run once at start
-
-  // Handle resize
-  window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    initParticles();
-  });
-
-  // Connect nearby particles (skip on mobile)
-function connectParticles() {
-  if (window.innerWidth < 768) return; // no lines on mobile
-
-  for (let i = 0; i < particles.length; i++) {
-    for (let j = i + 1; j < particles.length; j++) {
-      const dx = particles[i].x - particles[j].x;
-      const dy = particles[i].y - particles[j].y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance < maxDistance) {
-        const midX = (particles[i].x + particles[j].x) / 2;
-        const midY = (particles[i].y + particles[j].y) / 2;
-        let alpha = 0.2 - distance / (maxDistance * 1.3);
-
-        if (mouse.visible) {
-          const distToMouse = Math.sqrt((midX - mouse.x) ** 2 + (midY - mouse.y) ** 2);
-          if (distToMouse < mouseRadius) {
-            alpha = 0.9 - distance / maxDistance;
-          }
-        }
-
-        ctx.strokeStyle = `rgba(255, 111, 97, ${Math.max(alpha, 0)})`;
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(particles[i].x, particles[i].y);
-        ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.stroke();
-      }
-    }
-  }
-}
-
-
-  // Animation loop
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "rgba(238, 239, 241, 0.05)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    for (let p of particles) {
-      p.move();
-      p.draw();
-    }
-
-    connectParticles();
-
-    if (Math.random() < connectionSpeed) {
-      for (let p of particles) {
-        p.vx += (Math.random() - 0.5) * 0.05;
-        p.vy += (Math.random() - 0.5) * 0.05;
-      }
-    }
-
-    requestAnimationFrame(animate);
-  }
-
-  animate();
-});
-
-if (window.innerWidth > 768) {
-  // CUSTOM CURSOR SECTION
-
-  // Get cursor element
-  const cursor = document.getElementById("custom-cursor");
-
-  // Track mouse movement
-  document.addEventListener("mousemove", (e) => {
-    cursor.style.top = `${e.clientY}px`;
-    cursor.style.left = `${e.clientX}px`;
-    cursor.style.opacity = "1";
-  });
-
-  // Hide cursor when mouse leaves window
-  document.addEventListener("mouseleave", () => {
-    cursor.style.opacity = "0";
-  });
-
-  // Add hover scaling & glow for interactive elements
-  const interactiveElements = document.querySelectorAll(
-    "a, button, svg, img, .project-card"
-  );
-
-  interactiveElements.forEach((el) => {
-    el.addEventListener("mouseenter", () => {
-      cursor.style.transform = "translate(-50%, -50%) scale(2)";
-      cursor.style.backgroundColor = "rgba(255, 111, 97, 0.15)";
-      cursor.style.boxShadow = "0 0 12px rgba(255, 111, 97, 0.4)";
-    });
-
-    el.addEventListener("mouseleave", () => {
-      cursor.style.transform = "translate(-50%, -50%) scale(1)";
-      cursor.style.backgroundColor = "transparent";
-      cursor.style.boxShadow = "none";
-    });
-  });
-}
   
 // Fade in 
 document.addEventListener("DOMContentLoaded", () => {
