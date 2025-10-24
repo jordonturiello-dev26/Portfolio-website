@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   canvas.height = window.innerHeight;
 
   const particles = [];
-  const numParticles = window.innerWidth < 768 ? 150 : 300;
+  const numParticles = window.innerWidth < 768 ? 150 : 700;
   const mouse = { x: null, y: null, radius: 200 };
 
   // Track mouse movement
@@ -117,7 +117,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   init();
   animate();
-
   window.addEventListener("resize", () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
