@@ -131,22 +131,23 @@ body {
   }
   
   .hero-btn {
-    margin-top: 1rem;
+    display: inline-block;
+    margin-top: 0rem;
     padding: 0.8rem 2rem;
-    border: 2px solid #ff4d4d;
+    border: 2px solid #ff6f61;
     border-radius: 4px;
     font-size: 1rem;
-    color: #ff4d4d;
+    color: #ff6f61;
     background: transparent;
-    transition: all 0.3s ease;
+    cursor: pointer;
+    transition: transform 0.3s ease; /* smooth scaling only */
   }
+  
   .hero-btn:hover {
-    background: #ff4d4d;
-    color: #fff;
-    transform: translateY(-3px);
-    box-shadow: 0 4px 20px rgba(255, 77, 77, 0.4);
+    transform: scale(1.1); /* just scale, no color fill */
+    color: white;
   }
-
+  
   /* ===== ABOUT ===== */
   #about-section {
     position: relative;
@@ -456,7 +457,7 @@ body {
     font-weight: 300;
     color: #555;
     margin-top: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     letter-spacing: 1px;
   }
   
